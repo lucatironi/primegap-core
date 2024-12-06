@@ -1,23 +1,33 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
-  test "must have an email" do
-    user = User.new(email_address: nil, password: "password")
-    assert_not user.valid?
+  context "schema" do
+    should have_db_column(:email_address).of_type(:string)
+    should have_db_column(:password_digest).of_type(:string)
+    should have_db_column(:created_at).of_type(:datetime)
+    should have_db_column(:updated_at).of_type(:datetime)
+
+    should have_db_index(:company_id)
+    should have_db_index(:email_address)
   end
 
-  test "must have a password" do
-    user = User.new(email_address: "user@example.com", password: nil)
-    assert_not user.valid?
+  context "secure password" do
+    should have_secure_password
   end
 
-  test "password must be long" do
-    user = User.new(email_address: "user@example.com", password: "pass")
-    assert_not user.valid?
+  context "associations" do
+    should belong_to(:company).optional.class_name("Company")
+    should have_many(:sessions).dependent(:destroy).class_name("Session")
   end
 
-  test "valid user" do
-    user = User.new(email_address: "user@example.com", password: "password")
-    assert user.valid?
+  context "validations" do
+    should validate_presence_of(:email_address)
+    should validate_length_of(:password).is_at_least(8)
+  end
+
+  test "password should be >= than 8 characters" do
+    assert_not User.new(email_address: "user@email.com", password: nil).valid?
+    assert_not User.new(email_address: "user@email.com", password: "foo").valid?
+    assert User.new(email_address: "user@email.com", password: "af3714ff0ffae").valid?
   end
 end
