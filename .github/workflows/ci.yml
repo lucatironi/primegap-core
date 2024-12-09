@@ -43,17 +43,15 @@ jobs:
           ruby-version: ruby-3.3.6
           bundler-cache: true
 
-      - name: Run tests
+      - name: Run minitest tests
         env:
           RAILS_ENV: test
           # REDIS_URL: redis://localhost:6379/0
         run: bin/rails test
 
-      - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
-          if-no-files-found: ignore
+      - name: Run rspec tests
+        env:
+          RAILS_ENV: test
+          # REDIS_URL: redis://localhost:6379/0
+        run: bin/rspec
 
