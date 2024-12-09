@@ -29,5 +29,6 @@ Gem::Specification.new do |spec|
   # Development/Test dependencies
   spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "rubocop-rails-omakase"
+  spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "shoulda"
 end
